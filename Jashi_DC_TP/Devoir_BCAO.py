@@ -9,7 +9,7 @@ import requests
 from bs4 import BeautifulSoup
 
 PATH_URL = 'cours/cours-des-devises-contre-Franc-CFA-appliquer-aux-transferts'
-URL = f'https://www.bceao.int/fr/{PATH_URL}'
+URL = "https://www.bceao.int/fr/{}".format(PATH_URL)
 
 
 class DataSouper(object):
@@ -23,24 +23,20 @@ class DataSouper(object):
 class CurrencyScrapper(object):
     @classmethod
     def scrapLink(cls, URL):
-        return DataSouper \
-            .httpFetcher(URL)
+        gosub1=DataSouper.httpFetcher(URL)
+        return gosub1
 
     @classmethod
     def souper(cls, URL):
         result = cls.scrapLink(URL)
-        return BeautifulSoup(
-            result,
-            'html.parser')
+        gosub2=BeautifulSoup(result,'html.parser')
+        return gosub2
 
     @classmethod
     def getBoxCourse(cls, URL):
         soupering = cls.souper(URL)
         # print(soupering) # Activate for verification
-        soupering = soupering \
-            .find_all(attrs={
-                'id': 'box_cours'})
-
+        soupering = soupering.find_all(attrs={'id': 'box_cours'})
         if soupering:
             table = soupering[0].table
             return table
@@ -49,13 +45,10 @@ class CurrencyScrapper(object):
     @classmethod
     def makeCurrencyList(cls, URL):
         soupering = cls.getBoxCourse(URL)
-        # print(soupering) # Activate for verification
+
         if soupering:
-            tr = soupering.find_all('tr')
-            factory = [
-                item.find_all('td')
-                for item in tr
-            ][1:]
+            tr_block = soupering.find_all('tr')
+            factory = [item.find_all('td')for item in tr_block][1:]
             factory = [
                 {
                     'Devise': x.string.strip(),
@@ -65,8 +58,10 @@ class CurrencyScrapper(object):
                 for (x, y, z) in factory
             ]
             factory = pd.DataFrame.from_dict(factory, orient='columns')
+
             return factory
         return None
+
 
     @classmethod
     def save(cls, URL, format=None):
@@ -75,24 +70,19 @@ class CurrencyScrapper(object):
             return soupering
         return None
 
-
     @classmethod
     def addDevise(cls, data):
-        
+
         dataCsv = CsvFactory.main()
         dataJson = JsonFactory.main()
         dataHtml = HtmlFactory.main()
         globData =  dataCsv + dataJson + dataHtml
         data = pd.DataFrame.from_dict(globData, orient='columns')
-        
-        devList = ["Euro", "Dollar us", "Yen japonais"]
-        data['devise'] = '' 
+        #data.insert(2, "XOF", [], True) ##
+        devList = ["Euro", "Dollar_CAN", "Yen japonais"]
+        data['devise'] = ''
         data['devise'] = data['devise'].apply(lambda x: Utils.choiceRandomise(devList))
         return data
-
-
-    
-
 
     @classmethod
     def main(cls):

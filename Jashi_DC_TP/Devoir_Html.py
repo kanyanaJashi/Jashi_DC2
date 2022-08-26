@@ -24,7 +24,6 @@ class HtmlFactory(object):
         trs_blocks = data.find_all('tr')
         for items in trs_blocks[1::]:
             tds_blocks = items.find_all('td')
-            # print(tds_blocks) # activate here for verification
             data1.append(
                 {
                     'name' : tds_blocks[0].text,
@@ -35,8 +34,7 @@ class HtmlFactory(object):
                     'age' : tds_blocks[5].text
                 }
             )
-        # else: # activate here for verification
-            # print(data1) # activate here for verification
+
         return data1
 
     @classmethod
@@ -57,7 +55,7 @@ class HtmlFactory(object):
         data = cls.naming(data)
         return(data)
 
-if __name__=="__main__":
-    fetched_data=HtmlFactory.main()
-    print(fetched_data)
-    print(type(fetched_data)) # to confirm that fetched_data is a list
+# if __name__=="__main__":
+#     fetched_data=HtmlFactory.main()
+#     print(fetched_data)
+#     print(type(fetched_data)) # to confirm that fetched_data is a list

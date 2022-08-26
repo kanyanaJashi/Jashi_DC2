@@ -50,4 +50,3 @@ class CsvFactory(object):
             .values()
         return list(data)
 
-# print(CsvFactory.main()) # Activate for verification
